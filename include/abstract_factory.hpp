@@ -22,7 +22,7 @@ private:
 protected:
     virtual_producer() = default;
 public:
-    ~virtual_producer() = default;
+    virtual ~virtual_producer() = default;
     typedef _Bt base_type;
     virtual base_type* get() const = 0;
     // template <typename... _Args> base_type* get(_Args&&... _args) const { return nullptr; }
