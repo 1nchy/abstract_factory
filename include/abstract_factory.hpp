@@ -72,6 +72,11 @@ factory<_Bt>::instance() -> self* {
     static self _s;
     return &_s;
 }
+/**
+ * @brief 注册实例类型
+ * @tparam _Dt 实例类型（需继承自 @c _Bt ）
+ * @param _s 类型的字符串键
+*/
 template <typename _Bt> template <typename _Dt>
 requires std::is_base_of<typename factory<_Bt>::base_type, _Dt>::value auto
 factory<_Bt>::enroll(const std::string& _s) -> void {
@@ -79,16 +84,27 @@ factory<_Bt>::enroll(const std::string& _s) -> void {
     expel(_s);
     _enrollment.insert(std::make_pair(_s, _p));
 }
+/**
+ * @brief 注销实例类型
+ * @param _s 类型的字符串键
+*/
 template <typename _Bt> auto
 factory<_Bt>::expel(const std::string& _s) -> void {
     if (!contains(_s)) return;
     delete _enrollment.at(_s);
     _enrollment.erase(_s);
 }
+/**
+ * @brief 是否已用该字符串键注册类型
+*/
 template <typename _Bt> auto
 factory<_Bt>::contains(const std::string& _s) const -> bool {
     return _enrollment.contains(_s);
 }
+/**
+ * @brief 根据字符串键获取类型实例
+ * @return 类型实例，若未注册则返回 @c nullptr
+*/
 template <typename _Bt> auto
 factory<_Bt>::get(const std::string& _s) const -> base_type* {
     if (!contains(_s)) return nullptr;
