@@ -49,9 +49,17 @@ public:
     typedef _Bt base_type;
     typedef factory<_Bt> self;
     static self* instance();
-    template <typename _Dt>
-        requires std::is_base_of<base_type, _Dt>::value
-        void enroll(const std::string&);
+    /**
+     * @brief 注册实例类型
+     * @tparam _Dt 实例类型（需继承自 @c _Bt ）
+     * @param _s 类型的字符串键
+    */
+    template <typename _Dt> requires std::is_base_of<base_type, _Dt>::value
+    void enroll(const std::string& _s) {
+        auto* const _p = new __details__::producer<base_type, _Dt>();
+        expel(_s);
+        _enrollment.insert(std::make_pair(_s, _p));
+    }
     void expel(const std::string&);
     bool contains(const std::string&) const;
     base_type* get(const std::string&) const;
@@ -71,18 +79,6 @@ template <typename _Bt> auto
 factory<_Bt>::instance() -> self* {
     static self _s;
     return &_s;
-}
-/**
- * @brief 注册实例类型
- * @tparam _Dt 实例类型（需继承自 @c _Bt ）
- * @param _s 类型的字符串键
-*/
-template <typename _Bt> template <typename _Dt>
-requires std::is_base_of<typename factory<_Bt>::base_type, _Dt>::value auto
-factory<_Bt>::enroll(const std::string& _s) -> void {
-    auto* const _p = new __details__::producer<base_type, _Dt>();
-    expel(_s);
-    _enrollment.insert(std::make_pair(_s, _p));
 }
 /**
  * @brief 注销实例类型
