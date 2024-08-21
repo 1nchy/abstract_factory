@@ -14,3 +14,7 @@
 !/doc
 !/doc/*
 !/doc/*/*
+
+!/.github
+!/.github/workflows
+!/.github/workflows/*
